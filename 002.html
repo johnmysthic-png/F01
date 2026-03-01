@@ -30,7 +30,7 @@
         .confirm-btn { background: #000; color: #fff; border: none; padding: 10px 20px; font-weight: 900; cursor: pointer; }
         .cancel-btn { background: #ccc; color: #333; border: none; padding: 10px 20px; font-weight: 900; cursor: pointer; }
 
-        .submit-btn { display: block; width: 100%; background-color: #004a99; color: #00d4ff; text-align: center; padding: 15px; font-weight: 900; text-transform: uppercase; border: 3px solid #000; box-shadow: 6px 6px 0px #000; cursor: pointer; }
+        .submit-btn { display: block; width: 100%; background-color: #004a99; color: #00d4ff; text-align: center; padding: 18px; font-weight: 900; text-transform: uppercase; border: 3px solid #000; box-shadow: 6px 6px 0px #000; cursor: pointer; }
         .submit-btn.disabled { background-color: #ccc !important; color: #888 !important; cursor: not-allowed; pointer-events: none; box-shadow: none !important; }
     </style>
 </head>
@@ -68,8 +68,8 @@
                 <label>Job Type</label>
                 <select id="jobType" required>
                     <option value="">Choose Type...</option>
-                    <option value="Custom Fabrication">Custom Fabrication</option>
                     <option value="Bulk Order">Bulk Production</option>
+                    <option value="Custom Fabrication">Custom Fabrication</option>
                     <option value="Repair/Restoration">Repair & Restoration</option>
                     <option value="Prototyping">R&D / Prototyping</option>
                 </select>
@@ -80,14 +80,11 @@
                     <option value="Mild Steel">Mild Steel</option>
                     <option value="Stainless">Stainless Steel</option>
                     <option value="Aluminum">Aluminum</option>
-                    <option value="Other">Other (Discuss F2F)</option>
+                    <option value="Other">Other</option>
                 </select>
             </div>
-            <div class="form-group full-width"><label>Project Notes</label><textarea id="notes" rows="3" placeholder="Describe the build..."></textarea></div>
-            <div class="form-group full-width">
-                <label>Blueprint/Reference (Storage Pending)</label>
-                <input type="text" disabled placeholder="File upload currently disabled - Bring files F2F">
-            </div>
+            <div class="form-group full-width"><label>Blueprints / Reference Photos</label><input type="file" id="file" required></div>
+            <div class="form-group full-width"><label>Project Notes</label><textarea id="notes" rows="3" placeholder="Additional details..."></textarea></div>
         </div>
 
         <div class="speed-fab-container">
@@ -95,7 +92,7 @@
             <p id="speedStatus" style="font-size: 0.7rem; margin-top: 5px; color: #666;">Standard Queue Selected</p>
         </div>
 
-        <button type="submit" id="submitBtn" class="submit-btn disabled">Submit to Backend</button>
+        <button type="submit" id="submitBtn" class="submit-btn disabled">Confirm & Submit Order</button>
     </form>
 </div>
 
@@ -117,7 +114,7 @@
 
     let isSpeedFab = false;
 
-    // UI Logic
+    // UI Logic for Speed Fab
     const speedBtn = document.getElementById('speedBtn');
     const speedModal = document.getElementById('speedModal');
     const speedStatus = document.getElementById('speedStatus');
@@ -141,7 +138,7 @@
         speedModal.style.display = 'none';
     };
 
-    // Validation
+    // Form Validation Logic
     const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
     const requiredInputs = form.querySelectorAll('[required]');
@@ -153,28 +150,37 @@
     }
     form.addEventListener('input', checkInputs);
 
-    // SUBMIT TO BACKEND (No Storage seeking)
+    // PHANTOM UPLOAD SUBMISSION
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        submitBtn.innerHTML = "UPLOADING TO DATABASE...";
+        submitBtn.innerHTML = "ANALYZING BLUEPRINTS..."; // The Illusion
         submitBtn.classList.add('disabled');
 
-        database.ref('detailed_orders').push({
-            client_name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            email: document.getElementById('email').value,
-            job_type: document.getElementById('jobType').value,
-            material: document.getElementById('material').value,
-            notes: document.getElementById('notes').value,
-            priority_mode: isSpeedFab ? "SPEED FAB (+15%)" : "Standard",
-            timestamp: new Date().toLocaleString()
-        }).then(() => {
-            window.location.href = "003.html";
-        }).catch((err) => {
-            alert("Database Error: " + err.message);
-            submitBtn.innerHTML = "Submit to Backend";
-            submitBtn.classList.remove('disabled');
-        });
+        // Capturing the name of the file ONLY
+        const fileInput = document.getElementById('file');
+        const fileName = fileInput.files[0] ? fileInput.files[0].name : "No file selected";
+
+        setTimeout(() => {
+            submitBtn.innerHTML = "COMMITTING TO CLOUD...";
+            
+            database.ref('detailed_orders').push({
+                client_name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                job_type: document.getElementById('jobType').value,
+                material: document.getElementById('material').value,
+                notes: document.getElementById('notes').value,
+                blueprint_log: fileName, // Only the name is saved to the database
+                priority_mode: isSpeedFab ? "SPEED FAB (+15%)" : "Standard",
+                timestamp: new Date().toLocaleString()
+            }).then(() => {
+                window.location.href = "003.html";
+            }).catch((err) => {
+                alert("Database Error: " + err.message);
+                submitBtn.innerHTML = "Confirm & Submit Order";
+                submitBtn.classList.remove('disabled');
+            });
+        }, 1500); // 1.5 second delay to make the "illusion" feel real
     });
 </script>
 </body>
