@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMT E. | High-Priority Portal</title>
+    <title>AMT E. | Project Intake</title>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* ... existing styles ... */
         body { font-family: 'Exo 2', sans-serif; background-color: #89CFF0; margin: 0; padding: 20px; display: flex; justify-content: center; }
         .container { max-width: 650px; width: 100%; background: #ffffff; padding: 30px; border: 3px solid #000; box-shadow: 12px 12px 0px #004a99; position: relative; }
         header { border-bottom: 5px solid #000; margin-bottom: 25px; padding-bottom: 10px; text-align: center; }
@@ -19,54 +18,14 @@
         label { display: block; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 5px; }
         input, textarea, select { width: 100%; padding: 10px; border: 2px solid #000; background-color: #f9f9f9; font-family: inherit; box-sizing: border-box; }
 
-        /* PIZZAZY SPEED FAB BUTTON */
-        .speed-fab-container {
-            margin: 20px 0;
-            padding: 15px;
-            border: 2px dashed #ff9900;
-            background: #fff9f0;
-            text-align: center;
-        }
+        /* SPEED FAB STYLING */
+        .speed-fab-container { margin: 20px 0; padding: 15px; border: 2px dashed #ff9900; background: #fff9f0; text-align: center; }
+        .speed-btn { background: #ff9900; color: #000; border: 3px solid #000; padding: 12px 25px; font-weight: 900; text-transform: uppercase; cursor: pointer; box-shadow: 4px 4px 0px #000; display: inline-block; }
+        .speed-btn.active { background: #33cc33; color: white; box-shadow: none; transform: translateY(2px); }
 
-        .speed-btn {
-            background: #ff9900;
-            color: #000;
-            border: 3px solid #000;
-            padding: 12px 25px;
-            font-weight: 900;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 4px 4px 0px #000;
-            transition: 0.2s;
-            display: inline-block;
-        }
-
-        .speed-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; background: #ffcc00; }
-        .speed-btn.active { background: #33cc33; color: white; border-style: solid; box-shadow: none; transform: translateY(2px); }
-
-        /* MODAL STYLES */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border: 5px solid #ff9900;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 15px 15px 0px #000;
-        }
-
-        .modal-content h2 { color: #ff9900; text-transform: uppercase; margin-top: 0; }
-        .modal-content p { font-weight: bold; line-height: 1.5; }
-
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border: 5px solid #ff9900; max-width: 400px; text-align: center; box-shadow: 15px 15px 0px #000; }
         .modal-btns { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
         .confirm-btn { background: #000; color: #fff; border: none; padding: 10px 20px; font-weight: 900; cursor: pointer; }
         .cancel-btn { background: #ccc; color: #333; border: none; padding: 10px 20px; font-weight: 900; cursor: pointer; }
@@ -79,9 +38,9 @@
 
 <div class="modal-overlay" id="speedModal">
     <div class="modal-content">
-        <h2>⚡ Fast-Track Protocol</h2>
-        <p>Choosing <strong>SPEED FABRICATION</strong> will initiate priority queueing and faster production turnaround.</p>
-        <p style="color: #d00;">Note: This adds a 15% surcharge to the final quoted project price.</p>
+        <h2>⚡ Priority Intake</h2>
+        <p>Choosing <strong>SPEED FABRICATION</strong> initiates priority scheduling.</p>
+        <p style="color: #d00;">Note: Adds a 15% surcharge to the final quote.</p>
         <div class="modal-btns">
             <button class="confirm-btn" id="acceptSpeed">ACCEPT +15%</button>
             <button class="cancel-btn" id="closeModal">DECLINE</button>
@@ -92,51 +51,62 @@
 <div class="container">
     <header>
         <h1>AMT ENGINEERING</h1>
-        <p style="font-weight: bold;">Full Custom Fabrication Intake</p>
+        <p style="font-weight: bold;">Project Intake Portal</p>
     </header>
 
     <form id="orderForm">
-        <div class="section-title">01. Client Info</div>
+        <div class="section-title">01. Contact Info</div>
         <div class="form-grid">
-            <div class="form-group full-width"><label>Full Name</label><input type="text" id="name" required></div>
-            <div class="form-group"><label>Phone</label><input type="text" id="phone" required></div>
+            <div class="form-group full-width"><label>Client Full Name</label><input type="text" id="name" required></div>
+            <div class="form-group"><label>Mobile Number</label><input type="text" id="phone" required></div>
             <div class="form-group"><label>Email</label><input type="text" id="email"></div>
         </div>
 
-        <div class="section-title">02. Project Details</div>
+        <div class="section-title">02. Project Selection</div>
         <div class="form-grid">
             <div class="form-group">
-                <label>Material</label>
-                <select id="material" required>
-                    <option value="">Select...</option>
-                    <option value="Mild Steel">Mild Steel</option>
-                    <option value="Stainless">Stainless</option>
-                    <option value="Aluminum">Aluminum</option>
+                <label>Job Type</label>
+                <select id="jobType" required>
+                    <option value="">Choose Type...</option>
+                    <option value="Custom Fabrication">Custom Fabrication</option>
+                    <option value="Bulk Order">Bulk Production</option>
+                    <option value="Repair/Restoration">Repair & Restoration</option>
+                    <option value="Prototyping">R&D / Prototyping</option>
                 </select>
             </div>
-            <div class="form-group"><label>Dimensions</label><input type="text" id="dimensions" placeholder="e.g. 20x20x10cm"></div>
-            <div class="form-group full-width"><label>Blueprints</label><input type="file" id="file" required></div>
+            <div class="form-group">
+                <label>Material Preference</label>
+                <select id="material" required>
+                    <option value="Mild Steel">Mild Steel</option>
+                    <option value="Stainless">Stainless Steel</option>
+                    <option value="Aluminum">Aluminum</option>
+                    <option value="Other">Other (Discuss F2F)</option>
+                </select>
+            </div>
+            <div class="form-group full-width"><label>Project Notes</label><textarea id="notes" rows="3" placeholder="Describe the build..."></textarea></div>
+            <div class="form-group full-width">
+                <label>Blueprint/Reference (Storage Pending)</label>
+                <input type="text" disabled placeholder="File upload currently disabled - Bring files F2F">
+            </div>
         </div>
 
         <div class="speed-fab-container">
             <div id="speedBtn" class="speed-btn">⚡ Enable Speed Fabrication</div>
-            <p id="speedStatus" style="font-size: 0.7rem; margin-top: 5px; color: #666;">Standard Turnaround Selected</p>
+            <p id="speedStatus" style="font-size: 0.7rem; margin-top: 5px; color: #666;">Standard Queue Selected</p>
         </div>
 
-        <button type="submit" id="submitBtn" class="submit-btn disabled">Submit Order</button>
+        <button type="submit" id="submitBtn" class="submit-btn disabled">Submit to Backend</button>
     </form>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
 <script>
     const firebaseConfig = {
         apiKey: "AIzaSyDX2_UkRC-NnFMZfLUH6NbYcBTjbuL8bFo",
         authDomain: "amt-engr.firebaseapp.com",
         projectId: "amt-engr",
-        storageBucket: "amt-engr.firebasestorage.app",
         messagingSenderId: "74892673141",
         appId: "1:74892673141:web:b647649463519ddcaa383c",
         databaseURL: "https://amt-engr-default-rtdb.firebaseio.com"
@@ -144,11 +114,10 @@
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const storage = firebase.storage();
 
     let isSpeedFab = false;
 
-    // UI Logic for Speed Fab
+    // UI Logic
     const speedBtn = document.getElementById('speedBtn');
     const speedModal = document.getElementById('speedModal');
     const speedStatus = document.getElementById('speedStatus');
@@ -159,12 +128,11 @@
             isSpeedFab = false;
             speedBtn.classList.remove('active');
             speedBtn.innerHTML = "⚡ Enable Speed Fabrication";
-            speedStatus.innerHTML = "Standard Turnaround Selected";
+            speedStatus.innerHTML = "Standard Queue Selected";
         }
     };
 
     document.getElementById('closeModal').onclick = () => speedModal.style.display = 'none';
-    
     document.getElementById('acceptSpeed').onclick = () => {
         isSpeedFab = true;
         speedBtn.classList.add('active');
@@ -173,7 +141,7 @@
         speedModal.style.display = 'none';
     };
 
-    // Form Logic
+    // Validation
     const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
     const requiredInputs = form.querySelectorAll('[required]');
@@ -185,25 +153,28 @@
     }
     form.addEventListener('input', checkInputs);
 
+    // SUBMIT TO BACKEND (No Storage seeking)
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        submitBtn.innerHTML = "SENDING TO SHOP...";
+        submitBtn.innerHTML = "UPLOADING TO DATABASE...";
         submitBtn.classList.add('disabled');
 
-        const file = document.getElementById('file').files[0];
-        const storageRef = storage.ref('priority_orders/' + Date.now() + "_" + file.name);
-
-        storageRef.put(file).then(snap => snap.ref.getDownloadURL()).then(url => {
-            return database.ref('detailed_orders').push({
-                client_name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                material: document.getElementById('material').value,
-                dimensions: document.getElementById('dimensions').value,
-                blueprint: url,
-                priority_mode: isSpeedFab ? "SPEED FAB (+15%)" : "Standard",
-                timestamp: new Date().toLocaleString()
-            });
-        }).then(() => { window.location.href = "003.html"; });
+        database.ref('detailed_orders').push({
+            client_name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            job_type: document.getElementById('jobType').value,
+            material: document.getElementById('material').value,
+            notes: document.getElementById('notes').value,
+            priority_mode: isSpeedFab ? "SPEED FAB (+15%)" : "Standard",
+            timestamp: new Date().toLocaleString()
+        }).then(() => {
+            window.location.href = "003.html";
+        }).catch((err) => {
+            alert("Database Error: " + err.message);
+            submitBtn.innerHTML = "Submit to Backend";
+            submitBtn.classList.remove('disabled');
+        });
     });
 </script>
 </body>
