@@ -8,7 +8,7 @@
     
     <style>
         body {
-            font-family: 'Exo 2', 'Segoe UI', Arial, sans-serif; /* UPDATED FONT */
+            font-family: 'Exo 2', 'Segoe UI', Arial, sans-serif;
             background-color: #89CFF0;
             color: #222;
             margin: 0;
@@ -23,7 +23,7 @@
             background: #ffffff;
             padding: 40px;
             border: 3px solid #000;
-            box-shadow: 12px 12px 0px #004a99; /* UPDATED TO INDUSTRIAL BLUE */
+            box-shadow: 12px 12px 0px #004a99; /* Industrial Blue */
         }
 
         header {
@@ -124,16 +124,17 @@
 
         .submit-btn {
             display: block;
+            width: 100%;
             background-color: #004a99;
             color: #00d4ff;
             text-align: center;
             padding: 18px;
-            text-decoration: none;
             font-weight: 900;
             text-transform: uppercase;
             border: 3px solid #000;
             transition: 0.2s;
             box-shadow: 6px 6px 0px #000;
+            cursor: pointer;
         }
 
         .submit-btn:hover {
@@ -142,23 +143,29 @@
             transform: translate(-2px, -2px);
             box-shadow: 8px 8px 0px #000;
         }
-		
-		
+        
         .submit-btn.disabled {
-         background-color: #ccc !important;
-         color: #888 !important;
-         cursor: not-allowed;
-         pointer-events: none; 
-         box-shadow: none !important;
-         transform: none !important;
-         border-color: #999 !important;
-         }
-		 
-		.middidy {
-		display: grid;
-		place-items: center;
-		height: 200px;
-		}
+            background-color: #ccc !important;
+            color: #888 !important;
+            cursor: not-allowed;
+            pointer-events: none; 
+            box-shadow: none !important;
+            transform: none !important;
+            border-color: #999 !important;
+        }
+         
+        .middidy {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .middidy a {
+            color: #004a99;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -169,31 +176,31 @@
         <p>Pre-Order & Custom Fabrication</p>
     </header>
 
-    <form> <div class="form-group">
+    <form id="orderForm">
+        <div class="form-group">
             <label for="name">Customer Full Name</label>
             <input type="text" id="name" name="name" placeholder="REQUIRED!" required>
         </div>
 
         <div class="form-group">
-            <label for="address">Bulacan Delivery Address (Manual Input)</label>
+            <label for="address">Bulacan Delivery Address</label>
             <textarea id="address" name="address" rows="3" placeholder="REQUIRED!" required></textarea>
         </div>
 
         <div class="form-group">
-            <label for="file">Upload Blueprints / PDFs / Photos / Docs </label>
+            <label for="file">Upload Blueprints / Photos</label>
             <input type="file" id="file" name="attachment" accept=".pdf, image/*" required>
         </div>
 
         <div class="pricing-box">
-            <p> <strong>Total Project Cost:</strong> <span class="status-text">Pending Owner Review</span></p>
+            <p><strong>Total Project Cost:</strong> <span class="status-text">Pending Owner Review</span></p>
         </div>
 
-        <a href="003.html" id="submitBtn" class="submit-btn disabled">Submit Order</a>
-		<br>
-		<br>
-		<div class="middidy" style="height: auto; margin-top: 10px;">
-		<a href="index.html">Cancel</a>
-		</div>
+        <button type="submit" id="submitBtn" class="submit-btn disabled">Submit Order</button>
+        
+        <div class="middidy">
+            <a href="index.html">Cancel</a>
+        </div>
 
         <div class="footer-note">
             All transactions via Cash or Bank Transfer F2F.<br>
@@ -205,7 +212,7 @@
             <div class="step-icon">●</div>
             Fill out form
         </div>
-		<div class="step">
+        <div class="step">
             <div class="step-icon">○</div>
             Received
         </div>
@@ -215,24 +222,41 @@
         </div>
         <div class="step">
             <div class="step-icon">○</div>
-            Out for Shipment
+            Shipment
         </div>
     </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
-    const form = document.querySelector('form');
+    // 2. YOUR FIREBASE CONFIGURATION
+    const firebaseConfig = {
+        apiKey: "AIzaSyDX2_UkRC-NnFMZfLUH6NbYcBTjbuL8bFo",
+        authDomain: "amt-engr.firebaseapp.com",
+        projectId: "amt-engr",
+        storageBucket: "amt-engr.firebasestorage.app",
+        messagingSenderId: "74892673141",
+        appId: "1:74892673141:web:b647649463519ddcaa383c",
+        measurementId: "G-JQ7RTV9TZF",
+        databaseURL: "https://amt-engr-default-rtdb.firebaseio.com" // Plugged in your URL
+    };
+
+    // 3. INITIALIZE BACKEND
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // 4. FORM LOGIC
+    const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
     const inputs = form.querySelectorAll('input[required], textarea[required]');
 
+    // Validation: Only enable button if fields are filled
     function checkInputs() {
         let allFilled = true;
-        
         inputs.forEach(input => {
-            if (!input.value.trim()) {
-                allFilled = false;
-            }
+            if (!input.value.trim()) allFilled = false;
         });
 
         if (allFilled) {
@@ -241,18 +265,42 @@
             submitBtn.classList.add('disabled');
         }
     }
-form.addEventListener('input', checkInputs);
+
+    form.addEventListener('input', checkInputs);
+
+    // 5. THE DATA PUSH (BACKEND OPERATION)
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); 
+
+        if (submitBtn.classList.contains('disabled')) return;
+
+        // Visual feedback
+        submitBtn.innerHTML = "SENDING TO CLOUD...";
+        submitBtn.classList.add('disabled');
+
+        const nameValue = document.getElementById('name').value;
+        const addressValue = document.getElementById('address').value;
+        const fileName = document.getElementById('file').files[0] ? document.getElementById('file').files[0].name : "No file";
+
+        // Save data to Realtime Database
+        database.ref('orders').push({
+            customer_name: nameValue,
+            delivery_address: addressValue,
+            blueprint_name: fileName,
+            timestamp: new Date().toLocaleString(),
+            status: "New Order"
+        })
+        .then(() => {
+            // Success! Redirect to your success page (003.html)
+            window.location.href = "003.html";
+        })
+        .catch((error) => {
+            alert("Monster Error: " + error.message);
+            submitBtn.innerHTML = "Submit Order";
+            submitBtn.classList.remove('disabled');
+        });
+    });
 </script>
 
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
